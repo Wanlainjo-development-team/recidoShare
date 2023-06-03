@@ -9,11 +9,6 @@ export const useProfileStore = defineStore('profile', {
     }),
 
     actions: {
-        // async getUser(user) {
-        //     let _user = (await getDoc(doc(db, 'users', user))).data()
-
-        //     this.user = _user
-        // }
         getUser(user) {
             return new Promise(async (resolve, reject) => {
                 try {

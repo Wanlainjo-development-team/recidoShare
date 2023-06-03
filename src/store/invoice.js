@@ -9,12 +9,6 @@ export const useInvoiceStore = defineStore('invoice', {
     }),
 
     actions: {
-        // async getInvoice(user, id) {
-        //     let _iv = (await getDoc(doc(db, 'users', user, 'invoices', id))).data()
-
-        //     this.invoice = _iv
-        // }
-
         getInvoice(user, id) {
             return new Promise(async (resolve, reject) => {
                 try {
