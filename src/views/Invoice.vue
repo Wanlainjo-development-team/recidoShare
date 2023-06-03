@@ -27,21 +27,45 @@ export default {
   },
 
   mounted() {
+    const calculateSubTotalPromise = arr => {
+      return new Promise((resolve, reject) => {
+        let total = 0;
+
+        for (let i = 0; i < arr.length; i++) {
+          const prop = arr[i];
+          let price = prop?.price * prop?.quantity;
+          total += price;
+        }
+
+        const formattedResult = {
+          subTotal: total?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+          totalVAT: 'N/A',
+          finalPrice: total?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        };
+
+        resolve(formattedResult);
+      });
+    };
+
     this.profile.getUser(this.$route.params.user)
       .then(async profile => {
-        await this.invoice.getInvoice(this.$route.params.user, this.$route.params.invoice)
-        
-        switch (profile?.selectedTemplatePreview?.id) {
-          case 1: this.html = IV1(profile, profile?.order, profile?.date, profile?.invoiceContact, profile?.items, profile?.subTotal, profile?.vat, profile?.total, profile?.note)
-            break
-          case 2: this.html = IV2(profile, profile?.order, profile?.date, profile?.invoiceContact, profile?.items, profile?.subTotal, profile?.vat, profile?.total, profile?.note)
-            break
-          case 3: this.html = IV3(profile, profile?.order, profile?.date, profile?.invoiceContact, profile?.items, profile?.subTotal, profile?.vat, profile?.total, profile?.note)
-            break
-          case 4: this.html = IV4(profile, profile?.order, profile?.date, profile?.invoiceContact, profile?.items, profile?.subTotal, profile?.vat, profile?.total, profile?.note)
-            break
-          default: IV1(profile, profile?.order, profile?.date, profile?.invoiceContact, profile?.items, profile?.subTotal, profile?.vat, profile?.total, profile?.note)
-        }
+        let iv = await this.invoice.getInvoice(this.$route.params.user, this.$route.params.invoice)
+
+        calculateSubTotalPromise(iv?.items)
+          .then(result => {
+            console.log(result)
+            switch (profile?.selectedTemplatePreview?.id) {
+              case 1: this.html = IV1(profile, iv?.order, iv?.date, iv?.invoiceContact, iv?.items, result?.subTotal, result?.totalVAT, result?.finalPrice, iv?.note)
+                break
+              case 2: this.html = IV2(profile, iv?.order, iv?.date, iv?.invoiceContact, iv?.items, result?.subTotal, result?.totalVAT, result?.finalPrice, iv?.note)
+                break
+              case 3: this.html = IV3(profile, iv?.order, iv?.date, iv?.invoiceContact, iv?.items, result?.subTotal, result?.totalVAT, result?.finalPrice, iv?.note)
+                break
+              case 4: this.html = IV4(profile, iv?.order, iv?.date, iv?.invoiceContact, iv?.items, result?.subTotal, result?.totalVAT, result?.finalPrice, iv?.note)
+                break
+              default: IV1(profile, iv?.order, iv?.date, iv?.invoiceContact, iv?.items, result?.subTotal, result?.totalVAT, result?.finalPrice, iv?.note)
+            }
+          });
       })
   }
 }

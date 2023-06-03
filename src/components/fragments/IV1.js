@@ -1,8 +1,9 @@
-export const IV1 = (props) => {
+const calculateSubtotal = (price, quantity) => price * quantity
+
+export const IV1 = (profile, order, date, invoiceContact, items, subTotal, vat, total, note) => {
     return `
     <html lang="en">
-    
-    <body style="width: 800px; max-width: 98%; margin: 20px auto;">
+    <body style="width: 700px; max-width: 98%; margin: 20px auto;">
         <style>
             * {
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -14,7 +15,7 @@ export const IV1 = (props) => {
             table,
             th,
             td {
-                border: 1px solid black;
+                border: 1px solid rgba(0, 0, 0, 0.4);
                 border-collapse: collapse;
             }
     
@@ -24,41 +25,34 @@ export const IV1 = (props) => {
         </style>
         <nav style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <img src="./assets/logo.png" alt="" style="width: 100px; margin-right: .5em;">
+                <img src="${profile?.photoURL}" alt="" style="width: 80px; margin-right: .5em; display: ${profile?.photoURL ? 'initial' : 'none'}">
                 <div>
-                    <p style="font-size: 0.6rem; color: #0374E5; font-weight: 700; margin-bottom: .4em;">WANLAINJO COMPUTERS
-                        LTD</p>
-                    <p style="font-size: 0.6rem; color: #0374E5; margin-bottom: .4em;">312 NTA CHOBA ROAD</p>
-                    <p style="font-size: 0.6rem; color: #0374E5; margin-bottom: .4em;">20 PEREMABIRI STREET DLINE PORT
-                        HARCOURT, RIVERS</p>
-                    <p style="font-size: 0.6rem; color: #0374E5; margin-bottom: .4em;">wanlainjocomputers.com</p>
+                    <p style="font-size: 0.6rem; color: #0374E5; font-weight: 700; margin-bottom: .4em; display: ${profile?.name ? 'initial' : 'none'}">${profile?.name}</p>
+                    <p style="font-size: 0.6rem; color: #0374E5; margin-bottom: .4em; display: ${profile?.photoURL ? '' : 'none'}">${profile?.address}</p>
+                    <p style="font-size: 0.6rem; color: #0374E5; margin-bottom: .4em; display: ${profile?.website ? 'initial' : 'none'}">${profile?.website}</p>
                     <div>
                         <p
                             style="display: flex; justify-content: flex-start; align-items: center; font-size: 0.6rem; color: #0374E5;">
                             <span style="width: 50px; margin-bottom: .4em;">Email</span>
-                            <span>shop@wanlainjocomputers.com</span>
+                            <span>${profile?.email}</span>
                         </p>
                         <p
                             style="display: flex; justify-content: flex-start; align-items: center; font-size: 0.6rem; color: #0374E5;">
-                            <span style="width: 50px; margin-bottom: .4em;">Tel</span> <span>08145615252</span>
-                        </p>
-                        <p
-                            style="display: flex; justify-content: flex-start; align-items: center; font-size: 0.6rem; color: #0374E5;">
-                            <span style="width: 50px; margin-bottom: .4em;">Fax</span> <span>09131136595</span>
+                            <span style="width: 50px; margin-bottom: .4em;">Tel</span> <span>${profile?.contact}</span>
                         </p>
                     </div>
                 </div>
             </div>
             <div style="width: 250px;">
                 <p style="font-size: 1.7rem; text-align: right; margin-right: .4em;">Sales Order</p>
-                <div style="border: 1px solid #000; margin: 0; padding: .5em;">
+                <div style="border: 1px solid rgba(0, 0, 0, 0.4); margin: 0; padding: .5em;">
                     <p
                         style="width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: .8rem;">
-                        <span style="color: #0374E5;">Order #</span><span>SO-000237</span>
+                        <span style="color: #0374E5;">Order #</span><span>${order}</span>
                     </p>
                     <p
                         style="width: 100%; display: flex; justify-content: space-between; align-items: center; font-size: .8rem;">
-                        <span style="color: #0374E5;">Date</span><span>3/10/2023</span>
+                        <span style="color: #0374E5;">Date</span><span>${new Date(date).toDateString()}</span>
                     </p>
                 </div>
             </div>
@@ -66,41 +60,24 @@ export const IV1 = (props) => {
     
         <div
             style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; margin-top: 2em;">
-            <div style="width: 50%; display: flex; justify-content: flex-start; align-items: flex-start;">
-                <span style="font-size: .8rem; color: #0374E5;">Billing Address</span>
+            <div style="width: 50%; display: ${invoiceContact?.name ? 'flex' : 'none'}; justify-content: flex-start; align-items: flex-start;">
+                <span style="font-size: .8rem; color: #0374E5;">Customer</span>
     
                 <div style="margin-left: 90px;">
-                    <p style="font-size: .8rem; font-weight: 700; width: 150px;">BUA FOOD</p>
-                    <p style="font-size: .8rem; width: 150px;">bua food PORT HARCOURT, RIVERS NIGERIA</p>
-                </div>
-            </div>
-            <div style="width: 50%; display: flex; justify-content: flex-start; align-items: flex-start;">
-                <span style="font-size: .8rem; color: #0374E5;">Shipping Address</span>
-    
-                <div style="margin-left: 90px;">
-                    <p style="font-size: .8rem; font-weight: 700; width: 150px;">BUA FOOD</p>
+                    <p style="font-size: .8rem; font-weight: 700; width: 150px;">${invoiceContact?.name}</p>
+                    <p style="font-size: .8rem; width: 150px; display: ${invoiceContact?.address ? 'initial' : 'none'}">${invoiceContact?.address ? (`${invoiceContact?.address} ${invoiceContact?.city ? `, ${invoiceContact?.city}` : ''} ${invoiceContact?.state ? invoiceContact?.state : ''} ${invoiceContact?.country ? `, ${invoiceContact?.country}` : ''}`) : ''}</p>
                 </div>
             </div>
             <div
-                style="width: 50%; display: flex; justify-content: flex-start; align-items: flex-start; margin-top: 1.5em;">
+                style="width: 50%; display: ${invoiceContact?.phoneNumbers[0]?.number ? 'flex' : 'none'}; justify-content: flex-start; align-items: flex-start;">
                 <span style="font-size: .8rem; color: #0374E5;">Contact</span>
     
                 <div style="margin-left: 90px;">
-                    <p style="font-size: .8rem; width: 150px;">08037984354</p>
+                    <p style="font-size: .8rem; width: 150px;">${invoiceContact?.phoneNumbers[0]?.number}</p>
+                    <p style="font-size: .8rem; width: 150px; display: ${invoiceContact?.email ? 'initial' : 'none'}">${invoiceContact?.email}</p>
                 </div>
             </div>
         </div>
-    
-        <table style="width: 100%; margin-top: 2em;">
-            <tr style="background-color: #E1E1E1;">
-                <td style="font-size: .8rem; color: #0374E5;">Sales Rep</td>
-                <td style="font-size: .8rem; color: #0374E5;">Payment Terms</td>
-            </tr>
-            <tr>
-                <td style="font-size: .8rem;">WANLAINJO</td>
-                <td style="font-size: .8rem;">.</td>
-            </tr>
-        </table>
     
         <table style="width: 100%; margin-top: 2em;">
             <tr style="background-color: #E1E1E1;">
@@ -110,37 +87,39 @@ export const IV1 = (props) => {
                 <td style="font-size: .8rem; color: #0374E5;">Unit Price</td>
                 <td style="font-size: .8rem; color: #0374E5;">Sub-Total</td>
             </tr>
-            <tr>
-                <td style="font-size: .8rem;">HARD DRIVE</td>
-                <td style="font-size: .8rem;">500 GB STORAGE</td>
-                <td style="font-size: .8rem;">2</td>
-                <td style="font-size: .8rem;">N 12,000.00</td>
-                <td style="font-size: .8rem;">N 24,000.00</td>
-            </tr>
+            ${items.map((item) => {
+        return `
+                        <tr>
+                            <td style="font-size: .8rem;">${item.name}</td>
+                            <td style="font-size: .8rem;">${item.discription != '' ? item.discription : '...'}</td>
+                            <td style="font-size: .8rem;">${item.quantity ? item?.quantity?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''}</td>
+                            <td style="font-size: .8rem;">$${item.price ? item?.price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''}</td>
+                            <td style="font-size: .8rem;">$${calculateSubtotal(item.price, item.quantity)?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
+                        </tr>
+                        `
+    }).join('')
+        }
         </table>
     
         <div style="margin-top: 2em; width: 100%; display: flex; justify-content: flex-end; align-items: flex-start;">
             <table style="border: none;">
                 <tr>
                     <td style="border: none; width: 100px; font-size: .8rem; color: #0374E5;">Sub-Total</td>
-                    <td style="font-size: .8rem; text-align: right;">N 34,000.00</td>
+                    <td style="font-size: .8rem; text-align: right;">$${subTotal?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 </tr>
                 <tr>
-                    <td style="border: none; width: 100px; font-size: .8rem; color: #0374E5;">VAT (7.5%)</td>
-                    <td style="font-size: .8rem; text-align: right;">N 2,550.00</td>
+                    <td style="border: none; width: 100px; font-size: .8rem; color: #0374E5;">VAT (${vat}%)</td>
+                    <td style="font-size: .8rem; text-align: right;">$${vat?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 </tr>
                 <tr>
                     <td style="border: none; width: 100px; color: #0374E5; font-size: 1rem;">Total</td>
-                    <td style="font-size: 1rem; text-align: right;">N 36,550.00</td>
+                    <td style="font-size: 1rem; text-align: right;">$${total?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
                 </tr>
             </table>
         </div>
-        <div style="width: 100%; text-align: center; border: 2px solid black; padding: .3em; margin-top: 2em;">
-            <strong>Disclaimer: </strong> <span>All products are tested and trusted in good working condition. No returns.
-                <br>
-                Products can only be exchanged with the same cash value. All sales are final.</span>
-        </div>
+        <div style="width: 100%; text-align: center; border: 1px solid black; padding: .3em; margin-top: 2em;">
+              <strong>Note: </strong> <span style="font-size: 0.5rem">${note != '' ? note : profile?.disclaimer}</span>
+          </div>
     </body>
-    
     </html>`
 } 
